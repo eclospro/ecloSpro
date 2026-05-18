@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Incubatório | EclosPro</title>
+<meta name="description" content="EclosPro — Dashboard profissional para incubatório de aves. Monitore eclosão, vendáveis, refugo, RPP e perda de umidade por fornecedor, lote e linhagem.">
+<meta name="keywords" content="dashboard incubatório, eclosão aves, controle qualidade incubatório, RPP avicultura, refugo pintinhos">
+<meta property="og:title" content="EclosPro — Dashboard para Incubatório">
+<meta property="og:description" content="Monitore eclosão, vendáveis e refugo com clareza. Configurado para o seu incubatório em 48 horas.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --az:#0D2137;--az2:#1A4A7A;--az3:#2E75B6;--az4:#7EC8E3;
+  --vd:#0A6B3C;--vd2:#1DB869;--vd3:#D4F5E4;
+  --am:#F5A623;--vm:#E8322A;
+  --bg:#F4F7FB;--wht:#FFFFFF;--txt:#0D2137;--sub:#5A7089;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden}
+
+/* ── ANIMAÇÕES ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.fade-up{animation:fadeUp .7s ease both}
+.fade-up-d1{animation-delay:.1s}
+.fade-up-d2{animation-delay:.22s}
+.fade-up-d3{animation-delay:.34s}
+.fade-up-d4{animation-delay:.46s}
+.fade-up-d5{animation-delay:.58s}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,33,55,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(126,200,227,.15);padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-brand .icon{width:36px;height:36px;background:var(--az3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nav-brand span{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#fff}
+.nav-cta{background:var(--vd2);color:#fff;padding:9px 22px;border-radius:50px;font-size:13px;font-weight:500;text-decoration:none;transition:all .2s;white-space:nowrap}
+.nav-cta:hover{background:#18a85a;transform:translateY(-1px)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;background:linear-gradient(160deg,var(--az) 0%,#0A2540 55%,#0D3060 100%);display:flex;align-items:center;padding:100px 32px 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232E75B6' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:80px;background:linear-gradient(to bottom,transparent,var(--bg))}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(46,117,182,.2);border:1px solid rgba(126,200,227,.3);color:var(--az4);padding:6px 14px;border-radius:50px;font-size:12px;font-weight:500;margin-bottom:22px;letter-spacing:.3px}
+.hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--vd2);animation:pulse 2s infinite}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:20px}
+.hero h1 em{color:var(--az4);font-style:normal}
+.hero p{font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:36px;max-width:480px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:9px;background:var(--vd2);color:#fff;padding:14px 28px;border-radius:50px;font-size:15px;font-weight:500;text-decoration:none;transition:all .25s;box-shadow:0 8px 24px rgba(29,184,105,.35)}
+.btn-primary:hover{background:#18a85a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(29,184,105,.45)}
+.btn-primary svg{width:20px;height:20px}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);color:#fff;padding:14px 28px;border-radius:50px;font-size:15px;font-weight:400;text-decoration:none;border:1px solid rgba(255,255,255,.15);transition:all .25s}
+.btn-secondary:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
+
+/* Dashboard mockup */
+.hero-visual{position:relative;animation:float 5s ease-in-out infinite}
+.dash-mockup{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+.dash-topbar{background:#1F3864;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.dash-topbar span{font-family:'Syne',sans-serif;font-size:11px;color:rgba(255,255,255,.7);font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%}
+.dash-nav-strip{background:#172B4D;display:flex;gap:1px;padding:0 12px}
+.dash-nav-item{padding:7px 12px;font-size:9px;color:rgba(255,255,255,.5);white-space:nowrap}
+.dash-nav-item.active{color:#7EC8E3;border-bottom:2px solid #7EC8E3}
+.dash-body{padding:14px;background:#F0F2F7;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dash-card{background:#fff;border-radius:7px;padding:10px;border-top:2px solid #2E75B6}
+.dash-card.ok{border-top-color:#70AD47}
+.dash-card.warn{border-top-color:#C00000}
+.dc-lbl{font-size:7px;color:#5A7089;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.dc-val{font-size:16px;font-weight:700;color:#1F3864}
+.dc-sub{font-size:7px;color:#5A7089;margin-top:2px}
+.dash-charts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px 14px;background:#F0F2F7}
+.chart-box{background:#fff;border-radius:7px;padding:12px}
+.chart-title{font-size:8px;color:#5A7089;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;font-weight:600}
+.fake-bars{display:flex;align-items:flex-end;gap:4px;height:60px}
+.bar{border-radius:2px 2px 0 0;flex:1;transition:height .5s}
+.bar.g{background:#70AD47CC}
+.bar.b{background:#2E75B6CC}
+.bar.r{background:#C00000CC}
+.fake-line{height:60px;position:relative;overflow:hidden}
+.fake-line svg{width:100%;height:100%}
+
+/* ── STATS ── */
+.stats{background:#fff;padding:40px 32px;border-bottom:1px solid #E8EDF4}
+.stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.stat-n{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:var(--az2)}
+.stat-l{font-size:13px;color:var(--sub);margin-top:4px}
+
+/* ── SECTION HEADERS ── */
+.sec-header{text-align:center;margin-bottom:56px}
+.sec-tag{display:inline-block;background:rgba(46,117,182,.1);color:var(--az3);padding:5px 14px;border-radius:50px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+.sec-header h2{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:var(--az);margin-bottom:14px}
+.sec-header p{font-size:16px;color:var(--sub);max-width:540px;margin:0 auto;line-height:1.7}
+
+/* ── PROBLEMA ── */
+.problema{padding:80px 32px;background:var(--bg)}
+.problema-inner{max-width:1100px;margin:0 auto}
+.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:0}
+.prob-card{background:#fff;border-radius:14px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.06);border-left:4px solid var(--vm);position:relative;overflow:hidden}
+.prob-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:rgba(232,50,42,.04);border-radius:50%;transform:translate(30px,-30px)}
+.prob-ico{font-size:28px;margin-bottom:12px}
+.prob-card h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--az);margin-bottom:8px}
+.prob-card p{font-size:13px;color:var(--sub);line-height:1.6}
+
+/* ── SOLUCAO / ABAS ── */
+.solucao{padding:80px 32px;background:linear-gradient(180deg,#EEF3FB 0%,#fff 100%)}
+.abas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto}
+.aba-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:all .25s;cursor:default;border-top:3px solid var(--az3)}
+.aba-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+.aba-ico{font-size:26px;margin-bottom:12px}
+.aba-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--az);margin-bottom:7px}
+.aba-card p{font-size:12px;color:var(--sub);line-height:1.6}
+.aba-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:10px;background:rgba(46,117,182,.1);color:var(--az3)}
+
+/* ── INDICADORES ── */
+.indicadores{padding:80px 32px;background:var(--az);position:relative;overflow:hidden}
+.indicadores::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237EC8E3' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.ind-inner{max-width:1100px;margin:0 auto}
+.ind-inner .sec-header h2{color:#fff}
+.ind-inner .sec-header p{color:rgba(255,255,255,.6)}
+.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ind-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:24px;transition:background .2s}
+.ind-card:hover{background:rgba(255,255,255,.1)}
+.ind-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ind-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ind-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff}
+.ind-card p{font-size:12px;color:rgba(255,255,255,.55);line-height:1.6}
+.ind-meta{font-size:11px;color:var(--az4);margin-top:10px;font-weight:500}
+
+/* ── COMO FUNCIONA ── */
+.como{padding:80px 32px;background:#fff}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1100px;margin:0 auto;position:relative}
+.steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:2px;background:linear-gradient(to right,var(--az3),var(--az4));z-index:0}
+.step{text-align:center;position:relative;z-index:1}
+.step-n{width:56px;height:56px;border-radius:50%;background:var(--az2);color:#fff;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(26,74,122,.4)}
+.step h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--az);margin-bottom:7px}
+.step p{font-size:12px;color:var(--sub);line-height:1.6}
+
+/* ── PRECO ── */
+.preco{padding:80px 32px;background:linear-gradient(180deg,#EEF3FB 0%,#fff 100%)}
+.preco-inner{max-width:900px;margin:0 auto}
+.preco-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.preco-card{background:#fff;border-radius:18px;padding:36px;box-shadow:0 4px 24px rgba(0,0,0,.08);position:relative;overflow:hidden}
+.preco-card.destaque{background:linear-gradient(145deg,var(--az) 0%,var(--az2) 100%);box-shadow:0 16px 48px rgba(13,33,55,.35)}
+.preco-card.destaque h3,.preco-card.destaque .preco-val,.preco-card.destaque li,.preco-card.destaque p{color:#fff}
+.preco-card.destaque .preco-sub{color:rgba(255,255,255,.6)}
+.preco-card.destaque li{color:rgba(255,255,255,.85)}
+.preco-badge{display:inline-block;background:var(--am);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;position:absolute;top:20px;right:20px;letter-spacing:.5px}
+.preco-card h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--az);margin-bottom:6px}
+.preco-sub{font-size:13px;color:var(--sub);margin-bottom:20px}
+.preco-val{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--az);line-height:1}
+.preco-val sup{font-size:1.2rem;vertical-align:top;margin-top:10px;font-weight:600}
+.preco-val span{font-size:14px;font-weight:400;color:var(--sub)}
+.preco-sep{height:1px;background:rgba(0,0,0,.08);margin:22px 0}
+.preco-card.destaque .preco-sep{background:rgba(255,255,255,.15)}
+.preco-card ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.preco-card li{font-size:13px;color:var(--txt);display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.preco-card li::before{content:'✓';color:var(--vd2);font-weight:700;flex-shrink:0}
+.preco-card.destaque li::before{color:var(--az4)}
+.btn-wpp{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--vd2);color:#fff;padding:14px 24px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none;transition:all .25s;box-shadow:0 8px 24px rgba(29,184,105,.35)}
+.btn-wpp:hover{background:#18a85a;transform:translateY(-2px)}
+.btn-wpp-outline{display:flex;align-items:center;justify-content:center;gap:10px;border:2px solid var(--vd2);color:var(--vd2);padding:14px 24px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none;transition:all .25s}
+.btn-wpp-outline:hover{background:var(--vd3);transform:translateY(-2px)}
+
+/* ── FAQ ── */
+.faq{padding:80px 32px;background:#fff}
+.faq-inner{max-width:720px;margin:0 auto}
+.faq-item{border-bottom:1px solid #E8EDF4;padding:20px 0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--az);margin-bottom:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq-q::after{content:'＋';font-size:20px;color:var(--az3);flex-shrink:0;transition:transform .2s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{font-size:14px;color:var(--sub);line-height:1.7;display:none}
+.faq-item.open .faq-a{display:block}
+
+/* ── CTA FINAL ── */
+.cta-final{padding:100px 32px;background:linear-gradient(135deg,var(--az) 0%,#0A3060 100%);text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:'🐣';position:absolute;font-size:300px;opacity:.04;top:50%;left:50%;transform:translate(-50%,-50%)}
+.cta-final h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;color:#fff;margin-bottom:16px}
+.cta-final p{font-size:16px;color:rgba(255,255,255,.65);margin-bottom:40px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+.cta-final .btn-primary{font-size:16px;padding:16px 36px;box-shadow:0 12px 40px rgba(29,184,105,.4)}
+
+/* ── FOOTER ── */
+footer{background:#060F1A;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:gap}
+.footer-brand{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,.5)}
+.footer-txt{font-size:12px;color:rgba(255,255,255,.25)}
+
+/* ── FLOAT WPP ── */
+.float-wpp{position:fixed;bottom:28px;right:28px;z-index:200;background:var(--vd2);color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(29,184,105,.5);text-decoration:none;transition:all .25s;animation:pulse 3s infinite}
+.float-wpp:hover{transform:scale(1.1)}
+.float-wpp svg{width:28px;height:28px}
+.float-tooltip{position:absolute;right:70px;background:#fff;color:var(--txt);font-size:12px;font-weight:500;padding:6px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15);opacity:0;transform:translateX(6px);transition:all .2s;pointer-events:none}
+.float-wpp:hover .float-tooltip{opacity:1;transform:translateX(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .prob-grid,.abas-grid,.ind-grid,.steps,.preco-cards{grid-template-columns:1fr}
+  .steps::before{display:none}
+  nav{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="icon">🐣</div>
+    <span>EclosPro</span>
+  </div>
+  <a href="https://wa.me/5562996386129?text=Olá!%20Tenho%20interesse%20no%20Dashboard%20de%20Eclosão." class="nav-cta" target="_blank">Falar no WhatsApp</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge fade-up">🚀 Exclusivo para Incubatórios de Aves</div>
+      <h1 class="fade-up fade-up-d1">Seus dados de eclosão <em>finalmente fazendo sentido</em></h1>
+      <p class="fade-up fade-up-d2">Dashboard completo para monitorar eclosão, vendáveis, refugo, RPP e perda de umidade — por fornecedor, lote, linhagem e faixa de idade. Tudo num arquivo que abre no Chrome.</p>
+      <div class="hero-btns fade-up fade-up-d3">
+        <a href="https://wa.me/5562996386129?text=Olá!%20Quero%20saber%20mais%20sobre%20o%20Dashboard%20de%20Eclosão." class="btn-primary" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Quero o meu dashboard
+        </a>
+        <a href="#como-funciona" class="btn-secondary">Ver como funciona →</a>
+      </div>
+    </div>
+
+    <!-- Mini dashboard mockup -->
+    <div class="hero-visual fade-up fade-up-d4">
+      <div class="dash-mockup">
+        <div class="dash-topbar">
+          <div class="dot" style="background:#FF5F57"></div>
+          <div class="dot" style="background:#FFBD2E"></div>
+          <div class="dot" style="background:#28C840"></div>
+          <span style="margin-left:8px">Dashboard Eclosão & Qualidade</span>
+        </div>
+        <div class="dash-nav-strip">
+          <div class="dash-nav-item active">📊 Geral</div>
+          <div class="dash-nav-item">🏭 Fornecedor</div>
+          <div class="dash-nav-item">🐣 Por Lote</div>
+          <div class="dash-nav-item">📐 RPP</div>
+        </div>
+        <div class="dash-body">
+          <div class="dash-card"><div class="dc-lbl">Incubados</div><div class="dc-val">4.4M</div></div>
+          <div class="dash-card ok"><div class="dc-lbl">Vendáveis</div><div class="dc-val" style="color:#375623">3.7M</div></div>
+          <div class="dash-card"><div class="dc-lbl">% Eclosão</div><div class="dc-val">84.5%</div><div class="dc-sub">meta 87.4%</div></div>
+          <div class="dash-card ok"><div class="dc-lbl">% Vendáveis</div><div class="dc-val" style="color:#375623">82.7%</div></div>
+          <div class="dash-card warn"><div class="dc-lbl">% Refugo</div><div class="dc-val" style="color:#C00000">2.08%</div></div>
+        </div>
+        <div class="dash-charts">
+          <div class="chart-box">
+            <div class="chart-title">Eclosão por Fornecedor</div>
+            <div class="fake-bars">
+              <div class="bar g" style="height:85%"></div>
+              <div class="bar g" style="height:90%"></div>
+              <div class="bar b" style="height:78%"></div>
+              <div class="bar r" style="height:62%"></div>
+              <div class="bar g" style="height:88%"></div>
+              <div class="bar b" style="height:75%"></div>
+            </div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-title">% Refugo por Semana</div>
+            <div class="fake-line">
+              <svg viewBox="0 0 160 60" preserveAspectRatio="none">
+                <polyline points="0,45 20,38 40,42 60,30 80,48 100,35 120,28 140,40 160,32" fill="none" stroke="#2E75B6" stroke-width="2"/>
+                <polyline points="0,50 160,50" fill="none" stroke="#C00000" stroke-width="1.5" stroke-dasharray="4,3"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <div><div class="stat-n">7</div><div class="stat-l">Abas de análise</div></div>
+    <div><div class="stat-n">100%</div><div class="stat-l">Local — seus dados não saem do seu PC</div></div>
+    <div><div class="stat-n">48h</div><div class="stat-l">Prazo de entrega após receber os dados</div></div>
+    <div><div class="stat-n">0</div><div class="stat-l">Mensalidade de plataforma</div></div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="problema">
+  <div class="problema-inner">
+    <div class="sec-header fade-up">
+      <div class="sec-tag">O Problema</div>
+      <h2>Dados que existem, mas não ajudam</h2>
+      <p>O incubatório gera toneladas de dados toda semana. Mas sem uma visão clara, eles ficam presos em planilhas que ninguém consegue ler rápido.</p>
+    </div>
+    <div class="prob-grid">
+      <div class="prob-card fade-up fade-up-d1">
+        <div class="prob-ico">📋</div>
+        <h3>Planilhas difíceis de interpretar</h3>
+        <p>Os dados existem no sistema, mas transformá-los em decisão rápida exige muito tempo e experiência.</p>
+      </div>
+      <div class="prob-card fade-up fade-up-d2">
+        <div class="prob-ico">🔍</div>
+        <h3>Difícil identificar o problema</h3>
+        <p>Quando a eclosão cai, saber se é o fornecedor, a linhagem, a faixa de idade ou a máquina demora.</p>
+      </div>
+      <div class="prob-card fade-up fade-up-d3">
+        <div class="prob-ico">📉</div>
+        <h3>Refugo e perdas passam despercebidos</h3>
+        <p>Sem acompanhamento semanal visual, pequenos desvios de refugo e RPP acumulam prejuízo silencioso.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCAO -->
+<section class="solucao">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="sec-header fade-up">
+      <div class="sec-tag">A Solução</div>
+      <h2>Um dashboard feito para quem trabalha com incubação</h2>
+      <p>Desenvolvido por quem conhece o processo por dentro. Cada aba responde uma pergunta real do dia a dia do incubatório.</p>
+    </div>
+    <div class="abas-grid">
+      <div class="aba-card fade-up fade-up-d1">
+        <div class="aba-ico">📊</div>
+        <h3>Visão Geral</h3>
+        <p>KPIs principais em cards, evolução mensal, comparativo por fornecedor e distribuição por linhagem.</p>
+        <span class="aba-tag">Resumo executivo</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d2">
+        <div class="aba-ico">🏭</div>
+        <h3>Por Fornecedor</h3>
+        <p>Eclosão real vs meta, radar comparativo vs média geral, ranking com GAP da meta por granja.</p>
+        <span class="aba-tag">Gestão de fornecedores</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d3">
+        <div class="aba-ico">🧬</div>
+        <h3>Por Linhagem</h3>
+        <p>Comparativo CS, RO e HU — eclosão, vendáveis e refugo por linhagem.</p>
+        <span class="aba-tag">Análise genética</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d4">
+        <div class="aba-ico">📅</div>
+        <h3>Por Faixa de Idade</h3>
+        <p>Impacto da idade da matriz na eclosão — faixas 24-31, 32-50 e acima de 51 semanas.</p>
+        <span class="aba-tag">Análise etária</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d1">
+        <div class="aba-ico">📆</div>
+        <h3>Evolução Mensal</h3>
+        <p>Linha de eclosão real vs meta mês a mês, refugo em volume e percentual, volume incubado.</p>
+        <span class="aba-tag">Tendência</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d2">
+        <div class="aba-ico">🐣</div>
+        <h3>Por Lote</h3>
+        <p>Barras de eclosão semana a semana com linha de refugo. Tooltip mostra a idade da matriz.</p>
+        <span class="aba-tag">Rastreabilidade</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d3">
+        <div class="aba-ico">📐</div>
+        <h3>Umidade & RPP</h3>
+        <p>Perda na transferência e final por semana e por modelo de máquina. RPP vs faixa padrão.</p>
+        <span class="aba-tag">Qualidade operacional</span>
+      </div>
+      <div class="aba-card fade-up fade-up-d4" style="border-top-color:var(--vd2);background:rgba(29,184,105,.04)">
+        <div class="aba-ico">🔒</div>
+        <h3>100% Seguro</h3>
+        <p>Seus dados ficam no seu computador. Nenhuma informação é enviada para servidores externos.</p>
+        <span class="aba-tag" style="background:rgba(29,184,105,.12);color:var(--vd)">Privacidade total</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDICADORES -->
+<section class="indicadores">
+  <div class="ind-inner">
+    <div class="sec-header">
+      <div class="sec-tag" style="background:rgba(126,200,227,.15);color:var(--az4)">Indicadores monitorados</div>
+      <h2>Tudo que a empresa cobra, em um lugar só</h2>
+      <p>Os indicadores que definem o resultado financeiro do incubatório, com metas configuradas para a sua realidade.</p>
+    </div>
+    <div class="ind-grid">
+      <div class="ind-card"><div class="ind-top"><div class="ind-dot" style="background:#70AD47"></div><h3>% Eclosão</h3></div><p>Real vs meta por lote, comparando com o padrão real da idade da matriz — não uma meta genérica.</p><div class="ind-meta">Meta configurável por fornecedor</div></div>
+      <div class="ind-card"><div class="ind-top"><div class="ind-dot" style="background:#2E75B6"></div><h3>% Vendáveis</h3></div><p>Acompanhamento semanal e mensal do percentual de pintos vendáveis por lote e fornecedor.</p><div class="ind-meta">Meta padrão: 80%</div></div>
+      <div class="ind-card"><div class="ind-top"><div class="ind-dot" style="background:#C00000"></div><h3>% Refugo</h3></div><p>Visualização semanal do refugo em percentual, com alerta visual quando passa do limite.</p><div class="ind-meta">Limite configurável (padrão: 2%)</div></div>
+      <div class="ind-card"><div class="ind-top"><div class="ind-dot" style="background:#ED7D31"></div><h3>Perda de Umidade</h3></div><p>% perda na transferência e perda final por semana, com faixas de referência de 10–14%.</p><div class="ind-meta">Por máquina e por lote</div></div>
+      <div class="ind-card"><div class="ind-top"><div class="ind-dot" style="background:#8B5CF6"></div><h3>RPP</h3></div><p>Rendimento de Pinto por Plantel por semana, comparado com a faixa padrão da sua empresa.</p><div class="ind-meta">Faixa padrão: 69–71%</div></div>
+      <div class="ind-card"><div class="ind-top"><div class="ind-dot" style="background:#7EC8E3"></div><h3>Volume Incubado</h3></div><p>Acompanhamento de ovos incubados e evolução mensal, com comparativo incubados vs vendáveis.</p><div class="ind-meta">Por fornecedor e mensal</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="como" id="como-funciona">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Como funciona</div>
+      <h2>Do pedido ao painel em 48 horas</h2>
+      <p>Você não precisa instalar nada, aprender nenhuma ferramenta nova ou mexer em código.</p>
+    </div>
+    <div class="steps">
+      <div class="step fade-up fade-up-d1">
+        <div class="step-n">1</div>
+        <h3>Você entra em contato</h3>
+        <p>Manda mensagem no WhatsApp. Respondo em até 2 horas.</p>
+      </div>
+      <div class="step fade-up fade-up-d2">
+        <div class="step-n">2</div>
+        <h3>Envia a exportação</h3>
+        <p>Só a planilha exportada do seu sistema. A mesma que você já gera normalmente.</p>
+      </div>
+      <div class="step fade-up fade-up-d3">
+        <div class="step-n">3</div>
+        <h3>Configuro para você</h3>
+        <p>Ajusto as metas, modelos de máquina e indicadores da sua empresa.</p>
+      </div>
+      <div class="step fade-up fade-up-d4">
+        <div class="step-n">4</div>
+        <h3>Recebe pronto</h3>
+        <p>Um arquivo HTML. Abre no Chrome, seus dados já aparecem. Sem instalação.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECO -->
+<section class="preco">
+  <div class="preco-inner">
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Investimento</div>
+      <h2>Simples e sem surpresa</h2>
+    </div>
+    <div class="preco-cards">
+      <div class="preco-card fade-up fade-up-d1">
+        <h3>Dashboard + Configuração</h3>
+        <p class="preco-sub">Entrega única, seus dados configurados</p>
+        <div class="preco-val"><sup>R$</sup>497</div>
+        <div class="preco-sep"></div>
+        <ul>
+          <li>7 abas de análise completas</li>
+          <li>Configurado com seus dados reais</li>
+          <li>Metas ajustadas para sua empresa</li>
+          <li>Manual de uso incluído</li>
+          <li>Suporte de instalação</li>
+        </ul>
+        <a href="https://wa.me/5562996386129?text=Olá!%20Quero%20contratar%20o%20Dashboard%20por%20R%24497." class="btn-wpp-outline" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Quero este plano
+        </a>
+      </div>
+      <div class="preco-card destaque fade-up fade-up-d2">
+        <div class="preco-badge">MAIS POPULAR</div>
+        <h3>Dashboard + Atualização Mensal</h3>
+        <p class="preco-sub">Entrega + atualização todo mês</p>
+        <div class="preco-val"><sup>R$</sup>497 <span>+ R$97/mês</span></div>
+        <div class="preco-sep"></div>
+        <ul>
+          <li>Tudo do plano anterior</li>
+          <li>Você envia a planilha todo mês</li>
+          <li>Eu atualizo e devolvo em 24h</li>
+          <li>Sem precisar fazer nada técnico</li>
+          <li>Suporte contínuo via WhatsApp</li>
+        </ul>
+        <a href="https://wa.me/5562996386129?text=Olá!%20Quero%20o%20Dashboard%20com%20atualização%20mensal." class="btn-wpp" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Quero este plano
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-inner">
+    <div class="sec-header fade-up">
+      <div class="sec-tag">Perguntas Frequentes</div>
+      <h2>Dúvidas comuns</h2>
+    </div>
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">Precisa instalar algum programa?</div>
+      <div class="faq-a">Não. O dashboard é um arquivo HTML que abre direto no Google Chrome ou Microsoft Edge. Nenhuma instalação necessária.</div>
+    </div>
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">Meus dados ficam seguros?</div>
+      <div class="faq-a">Sim. Todos os dados ficam 100% no seu computador. O arquivo não envia nenhuma informação para servidores externos. Seus dados de produção não saem da sua máquina.</div>
+    </div>
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">O que preciso enviar para configurar?</div>
+      <div class="faq-a">Só a exportação do seu sistema (o mesmo arquivo que você já gera normalmente), as metas da sua empresa (% eclosão, refugo, RPP) e os modelos de máquinas do seu incubatório.</div>
+    </div>
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">Funciona com qualquer sistema de gestão de incubatório?</div>
+      <div class="faq-a">Funciona com exportações em Excel (.xlsx ou .xls). Se o seu sistema exporta nesse formato, o dashboard consegue processar. Em caso de dúvida, me manda uma exportação de exemplo e verifico antes de fechar.</div>
+    </div>
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">Posso personalizar as metas e indicadores?</div>
+      <div class="faq-a">Sim. Configuro as metas de eclosão, refugo, vendáveis, RPP e perda de umidade de acordo com os padrões da sua empresa. Cada indicador tem sua referência própria.</div>
+    </div>
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">Como funciona a atualização mensal?</div>
+      <div class="faq-a">Todo mês você me manda a nova exportação do sistema pelo WhatsApp. Atualizo o dashboard e devolvo em até 24 horas. Você não precisa fazer nada técnico.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2 class="fade-up">Pronto para tomar decisões com clareza?</h2>
+  <p class="fade-up fade-up-d1">Entre em contato agora. Respondo em até 2 horas e te mostro o dashboard com dados de demonstração antes de fechar.</p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:0" class="fade-up fade-up-d2">
+    <a href="https://wa.me/5562996386129?text=Olá!%20Vi%20a%20página%20do%20EclosPro%20e%20quero%20saber%20mais." class="btn-primary" target="_blank">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Falar no WhatsApp
+    </a>
+    <a href="mailto:eeclospro@gmail.com?subject=Interesse%20no%20EclosPro&body=Olá!%20Vi%20a%20página%20do%20EclosPro%20e%20tenho%20interesse." class="btn-secondary" style="border-color:rgba(255,255,255,.3)">
+      ✉ Enviar e-mail
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">🐣 EclosPro</div>
+  <div class="footer-txt">eeclospro@gmail.com &nbsp;·&nbsp; (62) 99638-6129</div>
+</footer>
+
+<!-- BOTÃO FLUTUANTE WPP -->
+<a href="https://wa.me/5562996386129?text=Olá!%20Tenho%20interesse%20no%20Dashboard%20de%20Eclosão." class="float-wpp" target="_blank" aria-label="WhatsApp">
+  <div class="float-tooltip">Fale conosco agora!</div>
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+function toggleFaq(el){
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.style.animationPlayState='running';
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>{
+  el.style.animationPlayState='paused';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
